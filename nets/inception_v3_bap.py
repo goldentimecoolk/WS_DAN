@@ -578,7 +578,7 @@ def generate_attention_image(image, attention_map):
     color_map = cv2.applyColorMap(mask.astype(np.uint8), cv2.COLORMAP_JET)
     attention_image = cv2.addWeighted(image, 0.5, color_map.astype(np.uint8), 0.5, 0)
     attention_image = cv2.cvtColor(attention_image, cv2.COLOR_BGR2RGB)
-    return attention_image
+    return attention_image          ##keep image's origional shape
 
 
 def inception_v3_bap(inputs,
@@ -598,11 +598,11 @@ def inception_v3_bap(inputs,
 
             with tf.variable_scope('bilinear_attention_pooling'):
 
-                feature_maps = end_points[FLAGS.feature_maps]
-                attention_maps = end_points[FLAGS.attention_maps]
+                feature_maps = end_points[FLAGS.feature_maps]        ##[17×17×768]
+                attention_maps = end_points[FLAGS.attention_maps]    ##[8×8×192]
 
                 num_parts = FLAGS.num_parts
-                attention_maps = attention_maps[:, :, :, :num_parts]
+                attention_maps = attention_maps[:, :, :, :num_parts] ##[8×8×32]
 
                 attention_image = tf.py_func(generate_attention_image, [inputs[0], attention_maps[0]], tf.uint8)
                 tf.summary.image('attention_image', tf.expand_dims(attention_image, 0))
