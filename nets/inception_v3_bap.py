@@ -524,10 +524,10 @@ def attention_pooling(attention_maps, feature_maps):
 
 
 def bilinear_attention_pooling(feature_maps, attention_maps, end_points, name):
-    feature_shape = feature_maps.get_shape().as_list()
-    attention_shape = attention_maps.get_shape().as_list()
+    feature_shape = feature_maps.get_shape().as_list()       ##[17×17×768]
+    attention_shape = attention_maps.get_shape().as_list()   ##[17×17×32]
 
-    phi_I = tf.einsum('ijkm,ijkn->imn', attention_maps, feature_maps)
+    phi_I = tf.einsum('ijkm,ijkn->imn', attention_maps, feature_maps)  ##[i,768,32]
     phi_I = tf.divide(phi_I, tf.to_float(attention_shape[1] * attention_shape[2]))
     phi_I = tf.multiply(tf.sign(phi_I), tf.sqrt(tf.abs(phi_I) + 1e-12))
 
@@ -599,7 +599,7 @@ def inception_v3_bap(inputs,
             with tf.variable_scope('bilinear_attention_pooling'):
 
                 feature_maps = end_points[FLAGS.feature_maps]        ##[17×17×768]
-                attention_maps = end_points[FLAGS.attention_maps]    ##[8×8×192]
+                attention_maps = end_points[FLAGS.attention_maps]    ##[17×17×192]
 
                 num_parts = FLAGS.num_parts
                 attention_maps = attention_maps[:, :, :, :num_parts] ##[8×8×32]
