@@ -531,7 +531,7 @@ def bilinear_attention_pooling(feature_maps, attention_maps, end_points, name):
     phi_I = tf.divide(phi_I, tf.to_float(attention_shape[1] * attention_shape[2]))
     phi_I = tf.multiply(tf.sign(phi_I), tf.sqrt(tf.abs(phi_I) + 1e-12))
 
-    raw_features = tf.nn.l2_normalize(phi_I, axis=[1, 2])
+    raw_features = tf.nn.l2_normalize(phi_I, axis=[1, 2])    ##[i,n_768,n_32]
     raw_features = tf.reshape(raw_features, [-1, 1, 1, attention_shape[-1] * feature_shape[-1]])
     end_points[name] = raw_features
 
